@@ -425,6 +425,9 @@ tlinelen(int y)
 	int i = term.col;
 	Line line = TLINE(y);
 
+	if (!line)
+		return 0;
+
 	if (line[i - 1].mode & ATTR_WRAP)
 		return i;
 
@@ -494,6 +497,10 @@ selnormalize(void)
 	}
 	sel.nb.y = MIN(sel.ob.y, sel.oe.y);
 	sel.ne.y = MAX(sel.ob.y, sel.oe.y);
+
+	/* satir ayrilmamissa (kaydirma gecmisi disi) snap/tlinelen yapma */
+	if (!TLINE(sel.nb.y) || !TLINE(sel.ne.y))
+		return;
 
 	selsnap(&sel.nb.x, &sel.nb.y, -1);
 	selsnap(&sel.ne.x, &sel.ne.y, +1);

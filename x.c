@@ -728,6 +728,16 @@ bmotion(XEvent *e)
 		return;
 	}
 
+	if ((e->xmotion.state & Button1Mask) && selactive()) {
+		int y = e->xmotion.y - borderpx;
+		Arg a = { .i = 1 };
+
+		if (y < win.ch)
+			kscrollup(&a);
+		else if (y > win.th - win.ch)
+			kscrolldown(&a);
+	}
+
 	mousesel(e, 0);
 }
 

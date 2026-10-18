@@ -1198,18 +1198,11 @@ selscroll(int orig, int n)
 	if (sel.ob.x == -1 || sel.alt != IS_SET(MODE_ALTSCREEN))
 		return;
 
-	if (BETWEEN(sel.nb.y, orig, term.bot) != BETWEEN(sel.ne.y, orig, term.bot)) {
-		selclear();
-	} else if (BETWEEN(sel.nb.y, orig, term.bot)) {
-		sel.ob.y += n;
-		sel.oe.y += n;
-		if (sel.ob.y < term.top || sel.ob.y > term.bot ||
-		    sel.oe.y < term.top || sel.oe.y > term.bot) {
-			selclear();
-		} else {
-			selnormalize();
-		}
-	}
+	/* Seçimi ekran dışına çıkınca silme; koordinatları kaydır.
+	 * Böylece mouse ile seçerken scroll yapsan seçim bozulmaz. */
+	sel.ob.y += n;
+	sel.oe.y += n;
+	selnormalize();
 }
 
 void
@@ -2832,4 +2825,10 @@ int
 tisaltscreen(void)
 {
 	return IS_SET(MODE_ALTSCREEN);
+}
+
+int
+selactive(void)
+{
+	return sel.mode != SEL_IDLE;
 }
